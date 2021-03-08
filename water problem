@@ -1,0 +1,32 @@
+# This function determines the amount of water (~~) collected between steel beams ([]).
+# An Array that describes the hight of the steel beams is required as an input.
+# Eg. A = [0, 1, 0, 3, 0, 3, 0, 2, 0, 1, 0, 2, 0, 2, 1, 2 ]
+# WaterBetweenBeams(A) = 14
+#         []~~[]                      3
+#         []  []~~[]~~~~~~[]~~[]~~[]  2
+#     []~~[]  []  []  []  []  [][][]  1
+#   ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  
+def WaterBetweenBeams(InputArray):
+    
+    #in case of Negative Numbers
+    if min(InputArray)<0: return "Error: Negative value in input."
+    
+    #Creates a List of all beam heights and sort smallest to largest 
+    BeamHeights = list(set(InputArray))
+    BeamHeights.sort()
+    
+    #Creates a List of all Increments in beam height and makes first element 0  
+    Increments = [j-i for i, j in zip(BeamHeights[:-1], BeamHeights[1:])]
+    Increments.insert(0,0)
+    
+    #For Each BeamHeight/Increment.
+    Water = 0
+    for x in range(len(BeamHeights)):
+        #Indexes Of BeamHeights greater than BeamHeights[x] 
+        Bounds = [i for i, e in enumerate(InputArray) if e >= BeamHeights[x]]
+        #Number of Beams taking up space
+        Beams = [1 for i, e in enumerate(InputArray) if e >= BeamHeights[x]]
+        #Min and Max of Bounds to get range then take Number of Beams and multiply by the increment.
+        Water = Water + (1 + max(Bounds) - min(Bounds) - sum(Beams))*Increments[x]
+
+    return round(Water,10)
